@@ -298,7 +298,7 @@ class PluginMonitoringWebservice {
       return $array;
    }
    
-   static function methodShinkenServiceDependecies($params, $protocol) {
+   static function methodShinkenServiceDependencies($params, $protocol) {
       global $PM_EXPORTFOMAT;
 
       if (!isset($params['tag'])) {
