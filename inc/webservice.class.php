@@ -280,7 +280,7 @@ class PluginMonitoringWebservice {
       return $array;
    }
 
-   static function methodShinkenHostDependecies($params, $protocol) {
+   static function methodShinkenHostDependencies($params, $protocol) {
       global $PM_EXPORTFOMAT;
 
       if (!isset($params['tag'])) {
