@@ -280,6 +280,41 @@ class PluginMonitoringWebservice {
       return $array;
    }
 
+   static function methodShinkenHostDependecies($params, $protocol) {
+      global $PM_EXPORTFOMAT;
+
+      if (!isset($params['tag'])) {
+         $params['tag'] = '';
+      }
+
+      if (isset($params['format']) && $params['format'] == 'integer') {
+         $PM_EXPORTFOMAT = 'integer';
+      } else {
+         $PM_EXPORTFOMAT = 'boolean';
+      }
+
+      $pmShinken = new PluginMonitoringShinken();
+      $array = $pmShinken->generateHostDependenciesCfg(0, $params['tag']);
+      return $array;
+   }
+   
+   static function methodShinkenServiceDependecies($params, $protocol) {
+      global $PM_EXPORTFOMAT;
+
+      if (!isset($params['tag'])) {
+         $params['tag'] = '';
+      }
+
+      if (isset($params['format']) && $params['format'] == 'integer') {
+         $PM_EXPORTFOMAT = 'integer';
+      } else {
+         $PM_EXPORTFOMAT = 'boolean';
+      }
+
+      $pmShinken = new PluginMonitoringShinken();
+      $array = $pmShinken->generateServiceDependenciesCfg(0, $params['tag']);
+      return $array;
+   }
 
 
    static function methodShinkenTemplates($params, $protocol) {

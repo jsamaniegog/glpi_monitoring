@@ -635,6 +635,10 @@ function plugin_monitoring_registerMethods() {
                           'methodGetHostsLocations');
    $WEBSERVICES_METHOD['monitoring.getUnavailabilities'] = array('PluginMonitoringWebservice',
                           'methodGetUnavailabilities');
+   $WEBSERVICES_METHOD['monitoring.shinkenHostDependecies'] = array('PluginMonitoringWebservice',
+                          'methodShinkenHostDependecies');
+   $WEBSERVICES_METHOD['monitoring.shinkenServiceDependencies'] = array('PluginMonitoringWebservice',
+                          'methodShinkenServiceDependencies');
 }
 
 /**

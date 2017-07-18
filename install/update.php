@@ -850,6 +850,10 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'networkports_id',
                                  'networkports_id',
                                  "int(11) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable,
+                                 'dependencies',
+                                 'dependencies',
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->dropField($newTable,
                                'alias_command');
       $migration->migrationOneTable($newTable);
@@ -895,6 +899,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable,
                               'acknowledge_users_id',
                               "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                              'dependencies',
+                              "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addKey($newTable,
                             array('state',
                                   'state_type'),
