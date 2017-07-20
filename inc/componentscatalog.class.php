@@ -121,6 +121,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    //         $ong[7] = __('Simple report', "monitoring");
             $ong[7] = __('Synthese', "monitoring");
             //$ong[7] = __('Report');
+            $ong[9] = self::createTabEntry(__('Dependencies', 'monitoring'), self::countForDependencies($item));
 
             return $ong;
          }
@@ -191,7 +192,17 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       return countElementsInTable('glpi_plugin_monitoring_contacts_items', $restrict);
    }
 
+   /**
+    * @param $item PluginMonitoringComponentscatalog object
+   **/
+   static function countForDependencies(PluginMonitoringComponentscatalog $item) {
 
+      $restrict = "host in (select h.id from glpi_plugin_monitoring_hosts h, glpi_plugin_monitoring_componentscatalogs_hosts ch"
+          . " where h.items_id = ch.items_id and h.itemtype = ch.itemtype and ch.plugin_monitoring_componentscalalog_id = "
+          . $item->getField('id') . ")";
+
+      return countElementsInTable('glpi_plugin_monitoring_dependencies', $restrict);
+   }
 
    /**
     * Display content of tab
@@ -256,6 +267,10 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                $pmPluginMonitoringComponentscatalog->showSyntheseReport($item->getID());
                break;
 
+            case 9:
+               $pmPluginMonitoringComponentscatalog_dependency = new PluginMonitoringComponentscatalog_Dependency();
+               $pmPluginMonitoringComponentscatalog_dependency->showDependencies($item->getID());
+               break;
 
             default :
 

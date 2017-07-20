@@ -298,7 +298,7 @@ class PluginMonitoringHost extends CommonDBTM {
 
 
 
-   function updateDependencies($itemtype, $items_id, $parent) {
+   /*function updateDependencies($itemtype, $items_id, $parent) {
       global $DB;
 
       $query = "UPDATE `glpi_plugin_monitoring_hosts`
@@ -306,7 +306,7 @@ class PluginMonitoringHost extends CommonDBTM {
          WHERE `itemtype`='".$itemtype."'
            AND `items_id`='".$items_id."'";
       $DB->query($query);
-   }
+   }*/
 
 
    /**

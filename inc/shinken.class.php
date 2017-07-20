@@ -738,7 +738,13 @@ class PluginMonitoringShinken extends CommonDBTM {
                      $networkEquipment->getFromDB($networkPort->fields['items_id']);
                      $parent = self::shinkenFilter($networkEquipment->fields['name']);
                      $a_parents_found[$parent] = 1;
-                     $pmHost->updateDependencies($classname, $data['items_id'], 'NetworkEquipment-'.$networkPort->fields['items_id']);
+                     //$pmHost->updateDependencies($classname, $data['items_id'], 'NetworkEquipment-'.$networkPort->fields['items_id']);
+                     $host = new PluginMonitoringHost();
+                     $host->getFromDBByQuery("WHERE items_id = " . $data['items_id'] . " AND itemtype = '" . $classname . "'");
+                     $host_dependency = new PluginMonitoringHost();
+                     $host_dependency->getFromDBByQuery("WHERE items_id = " . $networkPort->fields['items_id'] . " AND itemtype = 'NetworkEquipment'");
+                     $dependency = new PluginMonitoringDependency();
+                     $dependency->addDependency($host->getID(), $host_dependency->getID());
                   }
                }
             }
@@ -2701,26 +2707,13 @@ class PluginMonitoringShinken extends CommonDBTM {
          "Start generateHostDependenciesCfg\n"
       );
       
-      $query = "SELECT h.*,concat_ws('',c.name,p.name,pr.name,n.name) as host_name,
-                concat_ws('',c2.name,p2.name,pr2.name,n2.name) as hostname_dependency
-
-                FROM glpi_plugin_monitoring_hosts h
-                LEFT JOIN glpi_computers c ON h.items_id = c.id AND itemtype = 'Computer'
-                LEFT JOIN glpi_peripherals p ON h.items_id = p.id AND itemtype = 'Peripheral'
-                LEFT JOIN glpi_printers pr ON h.items_id = pr.id AND itemtype = 'Printer'
-                LEFT JOIN glpi_networkequipments n ON h.items_id = n.id AND itemtype = 'NetworkEquipment'
-                
-                LEFT JOIN glpi_computers c2 ON substring_index(dependencies,'-',-1) = c2.id AND substring_index(dependencies,'-',1) = 'Computer'
-                LEFT JOIN glpi_peripherals p2 ON substring_index(dependencies,'-',-1) = p2.id AND substring_index(dependencies,'-',1) = 'Peripheral'
-                LEFT JOIN glpi_printers pr2 ON substring_index(dependencies,'-',-1) = pr2.id AND substring_index(dependencies,'-',1) = 'Printer'
-                LEFT JOIN glpi_networkequipments n2 ON substring_index(dependencies,'-',-1) = n2.id AND substring_index(dependencies,'-',1) = 'NetworkEquipment'
-                
-                WHERE dependencies is not null";
+      $query = PluginMonitoringComponentscatalog_Dependency::sqlDependencies();
       
       $result = $DB->query($query);
       while ($result and $data = $DB->fetch_assoc($result)) {
-          $hostpendency['host_name'] = $data['host_name'];
-          $hostpendency['dependent_host_name'] = $data['hostname_dependency'];
+          $hostpendency['host_name'] = $data['hostname_dependency'];
+          $hostpendency['dependent_host_name'] = $data['host_name'];
+          //$hostpendency['inherits_parent'] = '1';
           $hostpendency['notification_failure_criteria'] = 'c,w';
           
           $a_hostpendency[] = $hostpendency;
@@ -2754,35 +2747,20 @@ class PluginMonitoringShinken extends CommonDBTM {
          "Start generateServiceDependenciesCfg\n"
       );
       
-      $query = "SELECT concat_ws('',c.name,p.name,pr.name,n.name) as host_name,
-                concat_ws('',c2.name,p2.name,pr2.name,n2.name) as hostname_dependency,
-                s.name service_name,
-                substring_index(substring_index(dependencies,'-',2),'-',-1) as service_name_dependency
-
-                FROM glpi_plugin_monitoring_services s
-                LEFT JOIN glpi_plugin_monitoring_componentscatalogs_hosts ch ON s.plugin_monitoring_componentscatalogs_hosts_id = ch.id 
-                LEFT JOIN glpi_computers c ON ch.items_id = c.id AND itemtype = 'Computer'
-                LEFT JOIN glpi_peripherals p ON ch.items_id = p.id AND itemtype = 'Peripheral'
-                LEFT JOIN glpi_printers pr ON ch.items_id = pr.id AND itemtype = 'Printer'
-                LEFT JOIN glpi_networkequipments n ON ch.items_id = n.id AND itemtype = 'NetworkEquipment'
-                
-                LEFT JOIN glpi_computers c2 ON substring_index(dependencies,'-',-1) = c2.id AND substring_index(dependencies,'-',1) = 'Computer'
-                LEFT JOIN glpi_peripherals p2 ON substring_index(dependencies,'-',-1) = p2.id AND substring_index(dependencies,'-',1) = 'Peripheral'
-                LEFT JOIN glpi_printers pr2 ON substring_index(dependencies,'-',-1) = pr2.id AND substring_index(dependencies,'-',1) = 'Printer'
-                LEFT JOIN glpi_networkequipments n2 ON substring_index(dependencies,'-',-1) = n2.id AND substring_index(dependencies,'-',1) = 'NetworkEquipment'
-                
-                WHERE dependencies is not null";
+      $query = PluginMonitoringComponentscatalog_Dependency::sqlDependencies();
       
       $result = $DB->query($query);
       while ($result and $data = $DB->fetch_assoc($result)) {
-          $servicependency['host_name'] = $data['host_name'];
-          $servicependency['service_description'] = $data['service_name'];
-          $servicependency['dependent_host_name'] = $data['hostname_dependency'];
-          $servicependency['dependent_service_description'] = $data['service_name_dependency'];
-          $servicependency['execution_failure_criteria'] = 'c,w';
-          $servicependency['notification_failure_criteria'] = 'c,w';
-          
-          $a_servicependency[] = $servicependency;
+          if ($data['service_name'] != "" AND $data['service_name_dependency'] != "") {
+            $servicependency['host_name'] = $data['hostname_dependency'];
+            $servicependency['service_description'] = $data['service_name_dependency'];
+            $servicependency['dependent_host_name'] = $data['host_name'];
+            $servicependency['dependent_service_description'] = $data['service_name'];
+            $servicependency['execution_failure_criteria'] = 'c,w';
+            $servicependency['notification_failure_criteria'] = 'c,w';
+
+            $a_servicependency[] = $servicependency;
+          }
       }
       
       PluginMonitoringToolbox::logIfExtradebug(
