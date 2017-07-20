@@ -512,7 +512,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
             }
          }
          $find = 0;
-         while ($datar=$DB->fetch_array($resultr)) {
+         while ($resultr and $datar=$DB->fetch_array($resultr)) {
             if ($datar['id'] == $items_id) {
                $find = 1;
                break;
