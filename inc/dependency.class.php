@@ -99,7 +99,13 @@ class PluginMonitoringDependency extends CommonDBTM {
         }
     }
 
-    function addDependency($host, $host_dependency) {
+    /**
+     * Add host dependency by ID of the host in plugin_monitoring_hosts.
+     * @param int $host id of the host (table plugin_monitoring_hosts)
+     * @param int $host_dependency id of the host
+     * @return boolean
+     */
+    function addHostDependencyByIds($host, $host_dependency) {
         
         if (!is_numeric($host) or !is_numeric($host_dependency) or $host < 1 or $host_dependency < 1) {
             return false;
@@ -115,6 +121,47 @@ class PluginMonitoringDependency extends CommonDBTM {
         }
     }
 
+    /**
+     * Add host dependency by array of datas. Need items_id and itemtype in 
+     * array of datas.
+     * @param array $data1 dependent
+     * @param array $data2 dependency
+     */
+    function addHostDependencyByDatas($data1, $data2) {
+        $host = new PluginMonitoringHost();
+        $host->getFromDBByQuery("WHERE items_id = " . $data1['items_id'] . " AND itemtype = '" . $data1['itemtype'] . "'");
+        $host_dependency = new PluginMonitoringHost();
+        $host_dependency->getFromDBByQuery("WHERE items_id = " . $data2['items_id'] . " AND itemtype = '" . $data2['itemtype'] . "'");
+        //$dependency = new PluginMonitoringDependency();
+        $this->addHostDependencyByIds($host->getID(), $host_dependency->getID());
+    }
+    
+    /**
+     * Delete all hosts dependency by array of datas. Need items_id and itemtype in 
+     * array of datas.
+     * @param array $data
+     */
+    function deleteHostDependenciesByData($data) {
+        $host = new PluginMonitoringHost();
+        $host->getFromDBByQuery("WHERE items_id = " . $data['items_id'] . " AND itemtype = '" . $data['itemtype'] . "'");
+        $this->deleteByCriteria(
+            array(
+                'host' => $host->getID()
+            ),
+            1, 0
+        );
+    }
+    
+    /**
+     * Delete all hosts dependencies.
+     * @param array $data
+     */
+    function deleteHostDependencies() {
+        $this->deleteByCriteria(
+            array(
+                'service' => NULL
+            ),
+            1, 0
+        );
+    }
 }
-
-?>

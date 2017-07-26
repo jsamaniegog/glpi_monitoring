@@ -822,6 +822,9 @@ function pluginMonitoringUpdate($current_version, $migrationname = 'Migration') 
     $migration->changeField($newTable, 'logretention', 'logretention', "int(5) NOT NULL DEFAULT '30'");
     $migration->changeField($newTable, 'nrpe_prefix_contener', 'nrpe_prefix_contener', "tinyint(1) NOT NULL DEFAULT '0'");
     $migration->changeField($newTable, 'append_id_hostname', 'append_id_hostname', "tinyint(1) NOT NULL DEFAULT '0'");
+    $migration->changeField($newTable, 'type_access_layer', 'type_access_layer', "int(11) NOT NULL DEFAULT '0'");
+    $migration->changeField($newTable, 'type_distribution_layer', 'type_distribution_layer', "int(11) NOT NULL DEFAULT '0'");
+    $migration->changeField($newTable, 'type_core_layer', 'type_core_layer', "int(11) NOT NULL DEFAULT '0'");
     $migration->dropField($newTable, 'phppath');
     $migration->dropField($newTable, 'rrdtoolpath');
     $migration->migrationOneTable($newTable);
@@ -831,6 +834,9 @@ function pluginMonitoringUpdate($current_version, $migrationname = 'Migration') 
     $migration->addField($newTable, 'extradebug', "tinyint(1) NOT NULL DEFAULT '0'");
     $migration->addField($newTable, 'nrpe_prefix_contener', "tinyint(1) NOT NULL DEFAULT '0'");
     $migration->addField($newTable, 'append_id_hostname', "tinyint(1) NOT NULL DEFAULT '0'");
+    $migration->addField($newTable, 'type_access_layer', "int(11) NOT NULL DEFAULT '0'", array('after' => 'append_id_hostname'));
+    $migration->addField($newTable, 'type_distribution_layer', "int(11) NOT NULL DEFAULT '0'", array('after' => 'type_access_layer'));
+    $migration->addField($newTable, 'type_core_layer', "int(11) NOT NULL DEFAULT '0'", array('after' => 'type_distribution_layer'));
     $migration->migrationOneTable($newTable);
 
 

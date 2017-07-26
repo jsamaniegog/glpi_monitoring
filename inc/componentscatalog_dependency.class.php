@@ -103,8 +103,8 @@ class PluginMonitoringComponentscatalog_Dependency extends CommonDBTM {
         // INFO message
         echo Html::image($CFG_GLPI["root_doc"] . "/pics/info-big.png", array('alt' => __('Info')));
         echo "<span style='color:black;font-size:large;vertical-align:center;'> " 
-            . __('Dependencies because of connections to network equipments will'
-            . ' be loaded automatically when shinken imports the hosts.', 'linesmanager') 
+            . __('Host dependencies because of connections to network equipments will'
+            . ' be loaded (or deleted) automatically when shinken imports the hosts.', 'linesmanager') 
             . "</span><br><br>";
         
         echo "<form method='post' name='componentscatalog_dependencies_form$rand' "

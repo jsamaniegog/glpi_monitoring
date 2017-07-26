@@ -192,6 +192,30 @@ class PluginMonitoringConfig extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
 
+      $net = new NetworkEquipmentType();
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Dependency layer levels, select a type of network equipment for', 'monitoring').":</td>";
+      echo "<td>";
+      echo "<table>";
+      echo "<tr><td>";
+      echo __('Access layer', 'monitoring') . ': ';
+      echo "</td><td>";
+      $net->dropdown(array('name' => 'type_access_layer', 'value' => $this->fields['type_access_layer']));
+      echo "</td></tr>";
+      echo "<tr><td>";
+      echo __('Distribution layer', 'monitoring') . ': ';
+      echo "</td><td>";
+      $net->dropdown(array('name' => 'type_distribution_layer', 'value' => $this->fields['type_distribution_layer']));
+      echo "</td></tr>";
+      echo "<tr><td>";
+      echo __('Core layer', 'monitoring') . ': ';
+      echo "</td><td>";
+      $net->dropdown(array('name' => 'type_core_layer', 'value' => $this->fields['type_core_layer']));
+      echo "</td></tr>";
+      echo "</table>";
+      echo "</td>";
+      echo "</tr>";
+      
       $this->showFormButtons($options);
 
       return true;
