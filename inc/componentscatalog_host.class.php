@@ -188,7 +188,7 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
       echo "<input type='hidden' name='is_static' value='1'/>";
       echo "</td>";
       echo "<td colspan='2'>";
-      Dropdown::showAllItems('items_id');
+      Dropdown::show('items_id');
       echo "</td>";
       echo "</tr>";
 
