@@ -306,7 +306,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    **/
    function getSearchOptions() {
 
-      $tab                 = parent::getSearchOptions();
+      $tab                 = parent::rawSearchOptions();
 
       $tab[10]['table']          = PluginMonitoringComponentscatalog::getTable();
       $tab[10]['field']          = 'notification_interval';
